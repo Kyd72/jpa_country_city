@@ -1,5 +1,6 @@
 package monprojet.dao;
 
+import monprojet.dto.PopulationParPays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -7,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import monprojet.entity.*;
@@ -42,5 +44,48 @@ public class CountryRepositoryTest {
         long nombre = countryDAO.count();
         assertEquals(combienDePaysDansLeJeuDeTest, nombre, "On doit trouver 4 pays" );
     }
+
+    @Test
+    void calculDeLaPopulationAPartirdeID() {
+        log.info("On vérifie que la population calculée est bien correcte ");
+        int idTest = 1;// PAYS = France, Population = 12
+
+
+        int population = countryDAO.getCountryPopulationByID(idTest);
+        assertEquals(12 , population, "On doit trouver 12 habitants" );
+
+
+
+    }
+
+    @Test
+    void testListePaysPopulation() {
+        log.info("On vérifie que le mapping population et pays est respecté");
+
+
+        List<PopulationParPays> list = countryDAO.getPopulationParPays();
+
+        assertEquals(3, list.size(), "On doit trouver 12 habitants" );
+
+        List<String> nomDesPays = new ArrayList<>();
+        nomDesPays.add( "France");
+        nomDesPays.add( "United Kingdom");
+        nomDesPays.add( "United States of America");
+
+        List<Integer>populationDesPays = new ArrayList<>();
+        populationDesPays.add( 12);
+        populationDesPays.add( 18);
+        populationDesPays.add( 27);
+
+        for(int i = 0; i <list.size(); i++) {
+
+            assertEquals(nomDesPays.get(i), list.get(i).getNom(), "Les noms des pays doivent correspondre" );
+            assertEquals(populationDesPays.get(i), list.get(i).getPopulation(), "Les populations des pays doivent correspondre" );
+        }
+
+
+
+    }
+
 
 }
